@@ -1,0 +1,33 @@
+# Directory
+.DS_Store
+data/
+
+# File formats
+*csv
+*xlsx
+*log
+*swp
+*.parquet
+*.html
+*.csv
+
+# environment
+*env
+.venv
+venv
+
+# cache
+__pycache__
+.ipynb_checkpoints
+.vscode
+
+# models
+*pkl
+
+# mflow
+.idea
+**/artifacts/
+**/models/
+.bin
+*.db
+mlruns/
