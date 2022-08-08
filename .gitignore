@@ -1,15 +1,12 @@
 # Directory
 .DS_Store
-data/
 
 # File formats
-*csv
 *xlsx
 *log
 *swp
 *.parquet
 *.html
-*.csv
 
 # environment
 *env
