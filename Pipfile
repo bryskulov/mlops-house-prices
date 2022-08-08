@@ -8,15 +8,14 @@ numpy = "*"
 pandas = "*"
 sklearn = "*"
 mlflow = "*"
-lightgbm = "*"
+xgboost = "*"
+hyperopt = "*"
+prefect = "==2.0b5"
 
 [dev-packages]
 jupyter = "*"
 matplotlib = "*"
 seaborn = "*"
-xgboost = "*"
-lightgbm = "*"
-hyperopt = "*"
 
 [requires]
 python_version = "3.9"
