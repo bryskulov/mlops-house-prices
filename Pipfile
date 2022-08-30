@@ -11,6 +11,7 @@ mlflow = "*"
 xgboost = "*"
 hyperopt = "*"
 prefect = "==2.0b5"
+flask = "*"
 
 [dev-packages]
 jupyter = "*"
