@@ -12,11 +12,13 @@ xgboost = "*"
 hyperopt = "*"
 prefect = "==2.0b5"
 flask = "*"
+gunicorn = "*"
 
 [dev-packages]
 jupyter = "*"
 matplotlib = "*"
 seaborn = "*"
+requests = "*"
 
 [requires]
 python_version = "3.9"
