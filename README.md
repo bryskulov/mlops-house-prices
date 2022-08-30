@@ -72,6 +72,9 @@ Now, you can observe all the scheduled, completed and failed flows in the Prefec
 
 ### Deploying a model as Flask API service
 
+Change directory to the folder "web-service".\
+The deployment is seperated to the different folder to minimize the number of dependencies used in Docker image building.
+
 To build the Docker image run:
 ```bash
 docker build -t house-price-prediction-service:v1 .
