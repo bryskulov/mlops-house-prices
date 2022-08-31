@@ -69,3 +69,18 @@ After creating work queue, we need to start the agent via bash script:
 
 Now, you can observe all the scheduled, completed and failed flows in the Prefect UI.
 
+
+### Deploying a model as Flask API service
+
+Change directory to the folder "web-service".\
+The deployment is seperated to the different folder to minimize the number of dependencies used in Docker image building.
+
+To build the Docker image run:
+```bash
+docker build -t house-price-prediction-service:v1 .
+```
+
+To run the Dokcer image run:
+```bash
+docker run -it --rm -p 9696:9696  house-price-prediction-service:v1
+```
