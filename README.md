@@ -84,3 +84,29 @@ To run the Dokcer image run:
 ```bash
 docker run -it --rm -p 9696:9696  house-price-prediction-service:v1
 ```
+
+### Deploying a model as Flask API service with MLFlow
+
+The model to be used should de already available on AWS S3 Bucket.\
+Define environment variables for the "S3 Bucket" and "Run ID" names, for example:
+
+
+```bash
+    export BUCKET_NAME='mlflow-models-bryskulov'
+    export RUN_ID='b94644a7545e431781807a3001f97c14'
+```
+
+Build the Docker Image:
+
+```bash
+    docker build -t house-price-prediction-service:v2 .
+```
+
+Run the Docker:
+
+```bash
+docker run -it --rm -p 9696:9696 \
+    -e BUCKET_NAME=$BUCKET_NAME \
+    -e RUN_ID=$RUN_ID \
+    house-price-prediction-service:v2
+```

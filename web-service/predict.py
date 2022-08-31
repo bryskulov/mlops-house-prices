@@ -1,13 +1,20 @@
+import os
 import pickle
 
+import mlflow
 import pandas as pd
 import xgboost as xgb
 from flask import Flask, request, jsonify
 
-model = xgb.XGBRegressor()
-model.load_model("model.xgb")
+RUN_ID = os.getenv('RUN_ID')
+BUCKET_NAME = os.getenv('BUCKET_NAME')
 
-with open('preprocessor.b', 'rb') as f_in:
+logged_model = f's3://{BUCKET_NAME}/1/{RUN_ID}/artifacts/models_mlflow'
+model = mlflow.pyfunc.load_model(logged_model)
+
+logged_dv = f's3://{BUCKET_NAME}/1/{RUN_ID}/artifacts/preprocessor/preprocessor.b'
+dv_location = mlflow.artifacts.download_artifacts(logged_dv)
+with open(dv_location, 'rb') as f_in:
     dv = pickle.load(f_in)
 
 
