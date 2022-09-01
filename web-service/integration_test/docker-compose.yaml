@@ -1,0 +1,10 @@
+services:
+  backend:
+    image: ${LOCAL_IMAGE_NAME}
+    ports:
+      - "9696:9696"
+    environment:
+      - BUCKET_NAME=${BUCKET_NAME}
+      - RUN_ID=${RUN_ID}
+      - MLFLOW_EXPERIMENT_ID=${MLFLOW_EXPERIMENT_ID}
+      - MODEL_LOCATION=/app/model
