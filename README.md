@@ -7,10 +7,14 @@ Dataset source: Kaggle House Prices Prediction challange [link](https://www.kagg
 
 Modelling notebook is inspired by [Serigne's notebook](https://www.kaggle.com/code/serigne/stacked-regressions-top-4-on-leaderboard)
 
+# Problem Definition
+
+This project tries to automate the prediction of house prices based on different features of a house such as location, shape, available utilities, condition, style, etc. The project intents to automate different stages of the process including training, deployment and further sustaining it in production.
+
 
 ## Documentation
 
-### Running with Python CLI
+### Train model once with Python CLI
 
 First, clone this repository to the local repository
 
@@ -44,7 +48,8 @@ To run the model training, run:
     python train.py --data_path data/train.csv
 ```
 
-### Running with Prefect Deployment
+
+### Training with Prefect Deployment with Scheduling
 
 Start Prefect UI with the following bash command. 
 It will run prefect server and it can accessed from the browser.
@@ -70,17 +75,37 @@ After creating work queue, we need to start the agent via bash script:
 Now, you can observe all the scheduled, completed and failed flows in the Prefect UI.
 
 
-### Deploying a model as Flask API service
+### Deploying a model as Flask API service with MLFlow on EC2 instance
 
-Change directory to the folder "web-service".\
-The deployment is seperated to the different folder to minimize the number of dependencies used in Docker image building.
+The model to be used should de already available on AWS S3 Bucket.\
 
-To build the Docker image run:
+To save model artifacts on the S3 bucket, launch MLFlow Tracking server as (don't forget to change your change your S3 unique bucket name)
+
 ```bash
-docker build -t house-price-prediction-service:v1 .
+    mlflow server \
+    --backend-store-uri=sqlite:///mlflow.db \
+    --default-artifact-root=s3://mlflow-models-bryskulov/
 ```
 
-To run the Dokcer image run:
+Define environment variables for the "S3 Bucket" and "Run ID" names, for example:
+
+
 ```bash
-docker run -it --rm -p 9696:9696  house-price-prediction-service:v1
+    export BUCKET_NAME='mlflow-models-bryskulov'
+    export RUN_ID='b94644a7545e431781807a3001f97c14'
+```
+
+Build the Docker Image:
+
+```bash
+    docker build -t house-price-prediction-service:v2 .
+```
+
+Run the Docker:
+
+```bash
+docker run -it --rm -p 9696:9696 \
+    -e BUCKET_NAME=$BUCKET_NAME \
+    -e RUN_ID=$RUN_ID \
+    house-price-prediction-service:v2
 ```
