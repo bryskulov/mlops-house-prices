@@ -109,3 +109,34 @@ docker run -it --rm -p 9696:9696 \
     -e RUN_ID=$RUN_ID \
     house-price-prediction-service:v2
 ```
+
+
+### Testing
+
+I run both unit tests and integration test on my deployment application.
+
+#### Unit tests
+
+Pytest is used for unittesting. The tests can be run through IDE or by script:
+
+```
+    pytest unit_tests
+```
+
+#### Integration test
+
+First, export the environment variables on the model, which is located on S3 server:
+
+```bash
+    export BUCKET_NAME='mlflow-models-bryskulov'
+    export MLFLOW_EXPERIMENT_ID='1'
+    export RUN_ID='b94644a7545e431781807a3001f97c14'
+```
+
+Integration test is automated, so you only need to run script "run.sh" in the folder "integration_test":
+
+```Note```: Change the working directory to "integration_test" folder
+
+```bash
+    source run.sh
+```
