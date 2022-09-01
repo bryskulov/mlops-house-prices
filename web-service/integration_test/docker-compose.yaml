@@ -4,7 +4,7 @@ services:
     ports:
       - "9696:9696"
     environment:
-      - BUCKET_NAME=${BUCKET_NAME}
-      - RUN_ID=${RUN_ID}
+      - S3_BUCKET_PATH=${S3_BUCKET_PATH}
       - MLFLOW_EXPERIMENT_ID=${MLFLOW_EXPERIMENT_ID}
+      - RUN_ID=${RUN_ID}
       - MODEL_LOCATION=/app/model

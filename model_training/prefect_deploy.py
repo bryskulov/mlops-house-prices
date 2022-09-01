@@ -1,4 +1,3 @@
-import argparse
 import pickle
 
 import mlflow
@@ -13,13 +12,12 @@ import xgboost as xgb
 from hyperopt import fmin, tpe, hp, STATUS_OK, Trials
 from hyperopt.pyll import scope
 
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
-mlflow.set_experiment("house-price-prediction")
+from prefect import task, flow
 
 
 RANDOM_SEED=42
 
-
+@task
 def read_data(filename):
     df = pd.read_csv(filename)
     
@@ -28,6 +26,7 @@ def read_data(filename):
     
     return df
 
+@task
 def prepare_features(df: pd.DataFrame):
     
     df_label = df.SalePrice.values
@@ -42,6 +41,7 @@ def prepare_features(df: pd.DataFrame):
     
     return df_processed, df_label, dv
 
+@task
 def split_dataset(X, y, split_sizes=[0.8, 0.5], random_seed=42):
     X_train, X_rem, y_train, y_rem = train_test_split(X, y, 
         train_size=split_sizes[0], 
@@ -51,6 +51,7 @@ def split_dataset(X, y, split_sizes=[0.8, 0.5], random_seed=42):
         random_state=random_seed)
     return X_train, y_train, X_valid, y_valid, X_test, y_test
 
+@task
 def train_model_search(train, valid, test, y_test):
     def objective(params):
         with mlflow.start_run():
@@ -67,6 +68,7 @@ def train_model_search(train, valid, test, y_test):
             y_pred = model_xgb.predict(test)
             rmse = mean_squared_error(y_test, y_pred, squared=False)
             mlflow.log_metric("rmse", rmse)
+        mlflow.end_run()
 
         return {'loss': rmse, 'status': STATUS_OK}
     
@@ -91,6 +93,7 @@ def train_model_search(train, valid, test, y_test):
         trials=Trials()
     )
 
+@task
 def train_best_model(train, valid, test, y_test, dv):
     with mlflow.start_run():
 
@@ -107,6 +110,7 @@ def train_best_model(train, valid, test, y_test, dv):
             'seed': RANDOM_SEED
         }
 
+        mlflow.set_tag("type", "best_model")
         mlflow.log_params(best_params)
 
         model_xgb = xgb.train(
@@ -125,24 +129,35 @@ def train_best_model(train, valid, test, y_test, dv):
         mlflow.log_artifact("models/preprocessor.b", artifact_path="preprocessor")
 
         mlflow.xgboost.log_model(model_xgb, artifact_path="models_mlflow")
+    mlflow.end_run()
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--data_path",
-        default="./data/train.csv",
-        help="location where the training data is saved."
-    )
-    args = parser.parse_args()
+@flow
+def main(data_path: str = "./data/train.csv"):
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    mlflow.set_experiment("house-price-prediction")
 
-    df = read_data(args.data_path)
-    X, y, dv = prepare_features(df)  
-    X_train, y_train, X_valid, y_valid, X_test, y_test = split_dataset(X, y, random_seed=RANDOM_SEED)
+    df = read_data(data_path)
+    X, y, dv = prepare_features(df).result()
+    X_train, y_train, X_valid, y_valid, X_test, y_test = split_dataset(X, y).result()
 
     train_xgb = xgb.DMatrix(X_train, label=y_train)
     valid_xgb = xgb.DMatrix(X_valid, label=y_valid)
     test_xgb = xgb.DMatrix(X_test, label=y_test)
 
     train_model_search(train_xgb, valid_xgb, test_xgb, y_test)
-    train_best_model(train_xgb, valid_xgb, test_xgb, y_test, dv)
+    train_best_model(train_xgb, valid_xgb, test_xgb, y_test, dv)   
+
+
+from prefect.deployments import DeploymentSpec
+from prefect.orion.schemas.schedules import IntervalSchedule
+from prefect.flow_runners import SubprocessFlowRunner
+from datetime import timedelta
+
+DeploymentSpec(
+  flow=main,
+  name="model_training_prefect",
+  schedule=IntervalSchedule(interval=timedelta(minutes=30)),
+  flow_runner=SubprocessFlowRunner(),
+  tags=["ml"]
+)

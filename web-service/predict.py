@@ -6,16 +6,16 @@ import pandas as pd
 import xgboost as xgb
 from flask import Flask, request, jsonify
 
-BUCKET_NAME = os.getenv('BUCKET_NAME', 'mlflow-models-bryskulov')
-MLFLOW_EXPERIMENT_ID = os.getenv('MLFLOW_EXPERIMENT_ID', '1')
-RUN_ID = os.getenv('RUN_ID', 'b94644a7545e431781807a3001f97c14')
+S3_BUCKET_PATH = os.getenv('S3_BUCKET_PATH')
+MLFLOW_EXPERIMENT_ID = os.getenv('MLFLOW_EXPERIMENT_ID')
+RUN_ID = os.getenv('RUN_ID')
 
 
 def load_model():
-    logged_model = f's3://{BUCKET_NAME}/{MLFLOW_EXPERIMENT_ID}/{RUN_ID}/artifacts/models_mlflow'
+    logged_model = f'{S3_BUCKET_PATH}/{MLFLOW_EXPERIMENT_ID}/{RUN_ID}/artifacts/models_mlflow'
     model = mlflow.pyfunc.load_model(logged_model)
 
-    logged_dv = f's3://{BUCKET_NAME}/{MLFLOW_EXPERIMENT_ID}/{RUN_ID}/artifacts/preprocessor/preprocessor.b'
+    logged_dv = f'{S3_BUCKET_PATH}/{MLFLOW_EXPERIMENT_ID}/{RUN_ID}/artifacts/preprocessor/preprocessor.b'
     dv_location = mlflow.artifacts.download_artifacts(logged_dv)
     with open(dv_location, 'rb') as f_in:
         dv = pickle.load(f_in)
