@@ -13,9 +13,7 @@ URL = 'http://127.0.0.1:9696/predict'
 actual_response = requests.post(URL, json=event, timeout=10)
 print(actual_response.json())
 
-expected_response = {
-    'price': float(171629)
-}
+expected_response = {'price': float(171629)}
 print(expected_response)
 
 diff = DeepDiff(actual_response.json(), expected_response, significant_digits=0)
