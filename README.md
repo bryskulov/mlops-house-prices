@@ -70,6 +70,8 @@ To run the model training, run:
     python train.py --data_path data/train.csv
 ```
 
+```Note```: I use MLFlow model registry in the jupyter notebook, however in production I decided to use models by the RUN_ID.
+
 
 ### Training with Prefect Deployment with Scheduling
 
