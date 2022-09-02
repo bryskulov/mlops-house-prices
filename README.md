@@ -55,7 +55,7 @@ Set your AWS S3 Bucket name as environment variable:
 
 ### Train model once with Python CLI
 
-This script is used to train the model once using the data in "model_training/data/" path. 
+This script is used to train the model once using the data in "model_training/data/" path.
 The idea is that new models are to be trained depending on the data in that folder.
 In future, of course, it is better to pull data from some relational database.
 
@@ -89,7 +89,7 @@ Start Prefect UI with the following bash command:
 
 Create a new deployment with Prefect CLI command:
 ```bash
-    prefect deployment create prefect_deploy.py 
+    prefect deployment create prefect_deploy.py
 ```
 
 ```Note```: This will create a new deployment in prefect, however it won't run it.
@@ -105,7 +105,7 @@ Now, you can observe all the scheduled, completed and failed flows in the Prefec
 
 ### Choosing the model
 
-After training the models, inspect the models and choose the model that you prefer. 
+After training the models, inspect the models and choose the model that you prefer.
 Pay attention that the chosen model has an artifact attached.\
 
 Define the chosen varibles as enrivonment variables:
@@ -124,6 +124,21 @@ Don't forget to change the directory and initiate a different Pipenv environment
 ```
 
 The web application is deployed via Flask on the localhost:9696.
+
+### Deploying the service with Makefile with all checks and tests
+
+You can deploy the model easily with a couple of commands, the script will make all the checks and only then deploy the service.
+
+First, change the environment variables in the file ".env" according to you.
+
+Second, run the Makefile:
+
+```bash
+    make setup
+    make deploy
+```
+
+### Deploying the service manually
 
 To build the Docker Image run:
 
@@ -163,5 +178,5 @@ Integration test is automated, so you only need to run script "run.sh" in the fo
     source run.sh
 ```
 
-```Note```: If you get an error, check that you activate pipenv environment 
+```Note```: If you get an error, check that you activate pipenv environment
 and passed the environment variables such as s3_bucket_path, mlflow_experiment_id, run_id
