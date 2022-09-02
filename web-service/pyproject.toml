@@ -4,6 +4,7 @@ disable = [
   "missing-function-docstring",
   "missing-module-docstring",
   "invalid-name",
+  "line-too-long",
 ]
 
 [tool.black]
