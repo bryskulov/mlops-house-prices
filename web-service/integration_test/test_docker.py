@@ -9,8 +9,8 @@ test_directory = Path(__file__).parent
 with open(test_directory / 'house_data.json', 'rt', encoding='utf-8') as f_in:
     event = json.load(f_in)
 
-url = 'http://127.0.0.1:9696/predict'
-actual_response = requests.post(url, json=event)
+URL = 'http://127.0.0.1:9696/predict'
+actual_response = requests.post(URL, json=event, timeout=10)
 print(actual_response.json())
 
 expected_response = {

@@ -2,8 +2,6 @@ import os
 import pickle
 
 import mlflow
-import pandas as pd
-import xgboost as xgb
 from flask import Flask, request, jsonify
 
 S3_BUCKET_PATH = os.getenv('S3_BUCKET_PATH')

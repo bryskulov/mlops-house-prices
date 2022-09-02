@@ -3,7 +3,6 @@ import pickle
 from pathlib import Path
 
 import mlflow
-import xgboost as xgb
 from sklearn.feature_extraction import DictVectorizer
 
 import predict
@@ -12,7 +11,7 @@ import predict
 def read_json(file):
     test_directory = Path(__file__).parent
 
-    with open(test_directory / file) as json_file:
+    with open(test_directory / file, encoding='utf-8') as json_file:
         return json.load(json_file)
 
 def test_prepare_features():
