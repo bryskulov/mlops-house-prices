@@ -11,6 +11,9 @@ Modelling notebook is inspired by [Serigne's notebook](https://www.kaggle.com/co
 
 This project tries to automate the prediction of house prices based on different features of a house such as location, shape, available utilities, condition, style, etc. The project intents to automate different stages of the process including training, deployment and further sustaining it in production.
 
+# Project Architecture
+![mlops_project](https://user-images.githubusercontent.com/50288724/192828244-0be535c6-86ed-4818-818e-6d8624f62a02.jpg)
+
 
 # Documentation
 
